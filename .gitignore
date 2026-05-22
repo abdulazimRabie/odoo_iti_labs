@@ -1,0 +1,14 @@
+# Odoo source code (not yours)
+odoo/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+.venv*/
+
+# Odoo filestore & logs
+*.log
+filestore/
