@@ -12,3 +12,7 @@ __pycache__/
 # Odoo filestore & logs
 *.log
 filestore/
+
+
+# vscode
+.vscode
