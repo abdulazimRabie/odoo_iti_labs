@@ -43,10 +43,16 @@ class Patient(models.Model):
     doctor_ids     = fields.Many2many('hms.doctors', string='Doctors')
 
     log_ids = fields.One2many('hms.patient.log', 'patient_id', string='Log History')
+    show_history = fields.Boolean(string='Show History', compute='_compute_show_history')
+
+    @api.depends('age')
+    def _compute_show_history(self):
+        for record in self:
+            record.show_history = record.age is False or record.age >= 50
 
     @api.onchange('age')
     def _onchange_age(self):
-        if self.age and self.age < 30:
+        if self.age is not False and self.age < 30:
             self.pcr = True
             return {
                 'warning': {
@@ -54,15 +60,6 @@ class Patient(models.Model):
                     'message': 'PCR has been automatically checked because age is under 30.',
                 }
             }
-
-    @api.onchange('state')
-    def _onchange_state(self):
-        if self.state:
-            self.log_ids = [(0, 0, {
-                'created_by': self.env.user.id,
-                'date': fields.Datetime.now(),
-                'description': f'State changed to {dict(self._fields["state"].selection).get(self.state)}',
-            })]
 
     @api.constrains('pcr', 'cr_ratio')
     def _check_cr_ratio(self):
@@ -75,3 +72,35 @@ class Patient(models.Model):
         for record in self:
             if record.department_id and not record.department_id.is_opened:
                 raise ValidationError('You cannot assign a patient to a closed department.')
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        patients = super(Patient, self).create(vals_list)
+        Log = self.env['hms.patient.log']
+        state_label_map = dict(self._fields['state'].selection)
+        for patient in patients:
+            Log.create({
+                'patient_id': patient.id,
+                'created_by': self.env.user.id,
+                'date': fields.Datetime.now(),
+                'description': f'State changed to {state_label_map.get(patient.state)}',
+            })
+        return patients
+
+    def write(self, vals):
+        if 'state' in vals:
+            old_states = {r.id: r.state for r in self}
+        result = super(Patient, self).write(vals)
+        if 'state' in vals:
+            Log = self.env['hms.patient.log']
+            new_state = vals['state']
+            state_label = dict(self._fields['state'].selection).get(new_state)
+            for record in self:
+                if old_states.get(record.id) != new_state:
+                    Log.create({
+                        'patient_id': record.id,
+                        'created_by': self.env.user.id,
+                        'date': fields.Datetime.now(),
+                        'description': f'State changed to {state_label}',
+                    })
+        return result

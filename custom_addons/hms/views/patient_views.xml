@@ -45,7 +45,7 @@
                         </group>
                         <group string="Medical Info">
                             <field name="blood_type"/>
-                            <field name="cr_ratio"/>
+                            <field name="cr_ratio" required="pcr"/>
                             <field name="pcr"/>
                         </group>
                     </group>
@@ -59,17 +59,19 @@
                                readonly="not department_id"/>
                     </group>
 
+                    <field name="show_history" invisible="1"/>
+
                     <!-- if age < 50 , history ==> hidden -->
                     <group string="Medical History"
-                           invisible="age and age &lt; 50">
+                           invisible="not show_history">
                         <field name="history" nolabel="1"/>
                     </group>
 
                     <!-- log history  -->
                     <notebook>
                         <page string="Log History">
-                            <field name="log_ids">
-                                <list editable="bottom">
+                            <field name="log_ids" readonly="1">
+                                <list>
                                     <field name="created_by"/>
                                     <field name="date"/>
                                     <field name="description"/>
