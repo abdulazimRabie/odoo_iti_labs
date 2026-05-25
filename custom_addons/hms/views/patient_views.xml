@@ -7,6 +7,7 @@
             <list string="Patients">
                 <field name="first_name"/>
                 <field name="last_name"/>
+                <field name="email"/>
                 <field name="birth_date"/>
                 <field name="age"/>
                 <field name="blood_type"/>
@@ -39,8 +40,9 @@
 
                     <group>
                         <group string="Personal Info">
+                            <field name="email"/>
                             <field name="birth_date"/>
-                            <field name="age"/>
+                            <field name="age" readonly="1"/>
                             <field name="address"/>
                         </group>
                         <group string="Medical Info">

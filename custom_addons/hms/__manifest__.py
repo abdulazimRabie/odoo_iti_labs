@@ -10,6 +10,7 @@
       'views/department_views.xml',
       'views/doctors_views.xml',
       'views/patient_views.xml',
+      'views/res_partner_views.xml'
     ],
     'installable': True,
     'application': True,
