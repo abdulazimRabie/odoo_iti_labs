@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!-- Inherit partner form view — add related_patient_id -->
     <record id="view_partner_form_inherit_hms" model="ir.ui.view">
         <field name="name">res.partner.form.inherit.hms</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='sale_purchase']//group[@name='misc']" position="inside">
-                <field name="related_patient_id"/>
+            <xpath expr="//notebook" position="inside">
+                <page string="HMS Info">
+                    <group string="Misc">
+                        <field name="related_patient_id"/>
+                    </group>
+                </page>
             </xpath>
         </field>
     </record>
 
-    <record id="view_partner_tree_inherit_hms_website" model="ir.ui.view">
-        <field name="name">res.partner.tree.inherit.hms.website</field>
+    <!-- Inherit partner list view — add website column -->
+    <record id="view_partner_list_inherit_hms" model="ir.ui.view">
+        <field name="name">res.partner.list.inherit.hms</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
-            <field name="email" position="after">
-                <field name="website" optional="show"/>
-            </field>
+            <xpath expr="//list" position="inside">
+                <field name="website"/>
+            </xpath>
         </field>
     </record>
 

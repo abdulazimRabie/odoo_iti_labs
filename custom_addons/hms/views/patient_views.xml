@@ -52,13 +52,14 @@
                         </group>
                     </group>
 
-                    <group string="Department Info">
+                    <group string="Department Info" groups="hms.group_hms_manager">
                         <field name="department_id"
                                domain="[('is_opened', '=', True)]"/>
                         <field name="capacity" readonly="1"/>
                         <field name="doctor_ids"
                                widget="many2many_tags"
-                               readonly="not department_id"/>
+                               readonly="not department_id"
+                               groups="hms.group_hms_manager"/>
                     </group>
 
                     <field name="show_history" invisible="1"/>
@@ -113,6 +114,7 @@
                 name="Doctors"
                 parent="menu_hms_root"
                 action="action_hms_doctors"
-                sequence="30"/>
+                sequence="30"
+                groups="hms.group_hms_manager"/>
 
 </odoo>
